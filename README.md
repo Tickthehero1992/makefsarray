@@ -20,6 +20,6 @@ Script validate content type, default type text/html
 
 __example__:
 
-*python makefs.py -i fs_dir/try.html -o fs_dir/try.c -u "/try.html" -u "/try.html" -s "MyServer" -p "/1.0 200 OK" -c "image/gif"* 
+*python makefs.py -i fs_dir/try.html -o fs_dir/try.c -u "/try.html"  -s "MyServer" -p "/1.0 200 OK" -c "image/gif"* 
 
 requerements: NO
