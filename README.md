@@ -1,20 +1,20 @@
-__MAKEFS PYTHON Script__
+__MAKEFSDATA Python Script__
 
 Here script for creating c array for LWIP http  web server.
 
 Arguments to use:
 
-* *"-i","--infile", type=str, help='Input file which you need to make array' 
+* "-i","--infile", type=str, help='Input file which you need to make array' 
 
-* *"-o","--outfile", type=str, help='Output file'
+* "-o","--outfile", type=str, help='Output file'
 
-* *"-u","--uri", type=str, help="uri of file like as /test.html", default="/test.html"
+* "-u","--uri", type=str, help="uri of file like as /test.html", default="/test.html"
 
-* *-s","--server", type=str, help="Server information", default="defaultServer"
+* -s","--server", type=str, help="Server information", default="defaultServer"
 
-* *"-p","--protocol", type=str, help="Header of protocol like as /1.0 200 OK", default="/1.0 200 OK"
+* "-p","--protocol", type=str, help="Header of protocol like as /1.0 200 OK", default="/1.0 200 OK"
 
-* *"-c", "--content", type=str, help="content-type", default="text/html"
+* "-c", "--content", type=str, help="content-type", default="text/html"
 
 Script validate content type, default type text/html
 
