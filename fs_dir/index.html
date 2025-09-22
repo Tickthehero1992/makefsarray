@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КРЭТ™</title>
+<style>
+body {background-color: Azure;}
+#header {
+    background-color:tan;
+    clear:both;
+    text-align:center;
+    padding:5px;    
+}
+table {
+	border: 2px solid green;
+	border-collapse: collapse;
+    background-color:#eeeeee;
+	margin:10px;
+    height:100%;
+    float:left;
+}
+tr:hover {background-color:White;}
+th, td {
+	font-size: 0.9rem;
+	text-align: center;
+	border: 1px solid green;
+}
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 300px;
+	background-color: green;
+	color: #fff;
+	text-align: left;
+	padding: 12px;
+	position: absolute;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}
+.soft-parent {
+	position: relative;
+	z-index: 0;
+}
+.soft-child {
+	position: absolute;
+	bottom: 25%;
+	right: 2%;
+	font-family: Verdana, sans-serif;
+	font-size: smaller;
+} 
+</style>
+</head>
+<body>
+	<div id="header">
+		<button style="background-color:green; color:white">Отладка и обновление</button>
+		<button style="background-color:green; color:white;">Перезагрузка</button>
+	</div>
+	<div id="flex_container" style="display: flex; flex-flow: row wrap; justify-content: space-evenly; align-items: flex-start; margin: 10vh 0 10vh 0">
+		<div>
+			<table id="status_table">
+				<caption>Состояние:</caption>
+				<tbody>
+					<tr>
+						<td>Состояние зарядного контроллера</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Код ошибки зарядного контроллера</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Допустимое зарядное напряжение</td>
+						<td>0 В</td>
+					</tr>
+					<tr>
+						<td>Зарядка</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Минимальный зарядный ток</td>
+						<td>0 A</td>
+					</tr>
+					<tr>
+						<td>Максимальное зарядное напряжение</td>
+						<td>0 В</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<table id="charging_table">
+				<caption>Данные зарядной сессии:</caption>
+				<tbody>
+					<tr>
+						<td>Потребность напряжения</td>
+						<td>0 В</td>
+					</tr>
+					<tr>
+						<td>Потребность тока</td>
+						<td>0 А</td>
+					</tr>
+					<tr>
+						<td>Текущее состояние заряда (SOC)</td>
+						<td>0 %</td>
+					</tr>
+					<tr>
+						<td>Состояние батареи</td>
+						<td></td>
+					</tr>	
+					<tr>
+						<td>Ограничение выходного тока</td>
+						<td>0 А</td>
+					</tr>
+					<tr>
+						<td>Ограничение выходного напряжения</td>
+						<td>0 В</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<table id="holding_table">
+				<caption>Выходные регистры:</caption>
+				<tbody>
+					<tr>
+						<td>RGB - лента</td>
+						<td style="background-color: white;"></td>
+					</tr>
+					<tr>
+						<td>Режим работы СБ</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Подтверждение разрешения работы контроллера CHADEMO</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Флаги состояния СБ</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Максимальное выходное напряжение на выходных силовых разъемах</td>
+						<td>0 В</td>
+					</tr>
+					<tr>
+						<td>Максимальное выходной ток на выходных силовых разъемах</td>
+						<td>0 А</td>
+					</tr>
+					<tr>
+						<td>Текущее выходное напряжение на выходных силовых разъемах</td>
+						<td>0 В</td>
+					</tr>
+					<tr>
+						<td>Текущий выходной ток на выходных силовых разъемах</td>
+						<td>0 А</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="status_bar" style="background-color: green; position:fixed; bottom:0px; left:0px; width:100%; height:30px;" hidden>
+		<p id="status_text" style="color:white; margin: 5px 0px 0px 20px"></p>
+	</div>
+	<script type="text/javascript" src="index.js"></script>
+</body>
+<footer>
+	<div id="header" class="soft-parent">АО "ГРПЗ" филиал "Касимовский приборный завод" © 2024<div class="soft-child">Версия ПО: </div></div>
+</footer>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Загрузка обновления</title>
+</head>
+<body style="background-color: Azure; overflow: hidden;">
+    <div id="navi" style="background-color:tan; clear:both; text-align:center; padding:5px;">
+		<button style="background-color:green; color:white;" disabled>Состояние</button>
+		<button style="background-color:green; color:white;" disabled>Перезагрузка</button>
+	</div>
+	<div style="margin-top:20px">
+		<form id="firm_form">
+			<label style="margin-right:5px" for="firm_file">Выберите файл прошивки</label>
+			<input type="file" id="firm_file" accept="application/octet-stream" disabled>
+			<input type="submit" value="Установить обновления" disabled>
+		</form>
+	</div>
+	<div style="margin-top:20px">
+		<form id="spiffs_form">
+			<label style="margin-right:5px" for="spiffs_file">Выберите файл для раздела SPIFFS</label>
+			<input type="file" id="spiffs_file" accept="application/octet-stream" disabled>
+			<input type="submit" value="Установить SPIFFS" disabled>
+		</form>
+	</div>
+	<div id="container" style="margin-top: 20px; margin-bottom: 20px; overflow: hidden; max-height: 72vh; width: 100%; margin-left: auto; margin-right: auto;">
+		<div id='logs' style="overflow-y: scroll; box-shadow: 0 1px 1px #575555 inset; background-color: white; height: 72vh; width: 100%;">
+		</div>
+	</div>
+	<div id="status_bar" style="background-color: green; position:absolute; bottom:-30px; left:0px; width:100%; height:30px;" hidden>
+		<p id="status_text" style="color:white; margin: 5px 0px 0px 20px">Установка обновления, пожалуйста подождите... /</p>
+	</div>
+	<script type="text/javascript" src="/?file=update.js"></script>
+</body>
+</html>
