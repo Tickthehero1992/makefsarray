@@ -74,7 +74,7 @@ class MakeHtmlCClass:
         self.template = {
             "": uri + "\0\0\0",
             "HTTP": header + "\r\n",
-            "Server ": server_name + "\r\n",
+            "Server: ": server_name + "\r\n",
             "Content-Length: ":self.contentSize +"\r\n",
             "Content-Type: ":self.contentType +"\r\n",
         }
@@ -107,7 +107,7 @@ class MakeHtmlCClass:
             hex_key = self.prepare_content(k)#['0x'+elem.encode("utf-8").hex() for elem in k]
             hex_value = self.prepare_content(v)#['0x'+elem.encode("utf-8").hex() for elem in v]
             hex_out += hex_template + hex_key + ("," if k != "" else "" )+ hex_value + ","
-        hex_out += "\n/* Content_Info*/\n"
+        hex_out += "0x0d, 0x0a," + "\n/* Content_Info*/\n"
         hex_out +=  self.prepare_content(self.content)+ "}"
         print(hex_out)
         return hex_out
