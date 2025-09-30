@@ -94,9 +94,15 @@ class MakeHtmlCClass:
         hex_content = ""
         i = 0
         for elem in content:
-            hex_content +='0x' + elem.encode("utf-8").hex() + ","
+            chr = elem.encode("utf-8").hex()
+            if(len(chr) > 2):
+                print(chr)
+                st = chr[0:2] +', ' + '0x' + chr[2:]
+            else:
+                st = chr
+            hex_content +='0x' + st + ","
             i+=1
-            if i%10 == 9:
+            if i%10 == 1:
                 hex_content+="\n"
         return hex_content[:-1]
 
@@ -107,8 +113,9 @@ class MakeHtmlCClass:
             hex_key = self.prepare_content(k)#['0x'+elem.encode("utf-8").hex() for elem in k]
             hex_value = self.prepare_content(v)#['0x'+elem.encode("utf-8").hex() for elem in v]
             hex_out += hex_template + hex_key + ("," if k != "" else "" )+ hex_value + ","
+        hex_out = hex_out[:-1]
         hex_out += "0x0d, 0x0a," + "\n/* Content_Info*/\n"
-        hex_out +=  self.prepare_content(self.content)+ "}"
+        hex_out +=  self.prepare_content(self.content)+ "};"
         print(hex_out)
         return hex_out
 
