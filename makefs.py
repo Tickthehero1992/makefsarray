@@ -1,5 +1,6 @@
 import argparse
 from enum import Enum
+import os
 
 class MakeHtmlCClass:
     class TypeContent(Enum):
@@ -70,7 +71,7 @@ class MakeHtmlCClass:
 
         self.validate_content_type(content_type)
         self.contentType = content_type
-        self.contentSize  = self.determine_content_size()
+        self.contentSize  = str(os.path.getsize(self.path_in))#self.determine_content_size()
         self.template = {
             "": uri + "\0\0\0",
             "HTTP": header + "\r\n",
@@ -96,7 +97,6 @@ class MakeHtmlCClass:
         for elem in content:
             chr = elem.encode("utf-8").hex()
             if(len(chr) > 2):
-                print(chr)
                 st = chr[0:2] +', ' + '0x' + chr[2:]
             else:
                 st = chr
@@ -104,19 +104,22 @@ class MakeHtmlCClass:
             i+=1
             if i%10 == 1:
                 hex_content+="\n"
+
         return hex_content[:-1]
 
     def create_arr(self):
-        hex_out = f"static const unsigned char FSDATA_ALIGN_PRE {self.create_name_variable()}[] FSDATA_ALIGN_POST = " + "{"
+        hex_out = f"extern const unsigned char FSDATA_ALIGN_PRE {self.create_name_variable()}[] FSDATA_ALIGN_POST = " + "{"
         for k,v in self.template.items():
             hex_template = f"\n/* {k}{v[:-2]} */ \n"
             hex_key = self.prepare_content(k)#['0x'+elem.encode("utf-8").hex() for elem in k]
             hex_value = self.prepare_content(v)#['0x'+elem.encode("utf-8").hex() for elem in v]
             hex_out += hex_template + hex_key + ("," if k != "" else "" )+ hex_value + ","
-        hex_out = hex_out[:-1]
+        if hex_out[-2] == ',' and hex_out[-1] == ',':
+            hex_out = hex_out[:-1]
+        #print(hex_out)
         hex_out += "0x0d, 0x0a," + "\n/* Content_Info*/\n"
         hex_out +=  self.prepare_content(self.content)+ "};"
-        print(hex_out)
+        print(self.content)
         return hex_out
 
     def make_file(self):
