@@ -73,7 +73,7 @@ class MakeHtmlCClass:
         self.contentType = content_type
         self.contentSize  = str(os.path.getsize(self.path_in))#self.determine_content_size()
         self.template = {
-            "": uri + "\0\0\0",
+            "": uri + "\0",
             "HTTP": header + "\r\n",
             "Server: ": server_name + "\r\n",
             "Content-Length: ":self.contentSize +"\r\n",
@@ -104,22 +104,23 @@ class MakeHtmlCClass:
             i+=1
             if i%10 == 1:
                 hex_content+="\n"
-
         return hex_content[:-1]
 
     def create_arr(self):
+        content_info =  self.prepare_content(self.content)
         hex_out = f"extern const unsigned char FSDATA_ALIGN_PRE {self.create_name_variable()}[] FSDATA_ALIGN_POST = " + "{"
         for k,v in self.template.items():
-            hex_template = f"\n/* {k}{v[:-2]} */ \n"
+            hex_template = f"\n/* {k}{v[:-1]}  {str(len(v) + len(k))} chars*/ \n"
             hex_key = self.prepare_content(k)#['0x'+elem.encode("utf-8").hex() for elem in k]
             hex_value = self.prepare_content(v)#['0x'+elem.encode("utf-8").hex() for elem in v]
             hex_out += hex_template + hex_key + ("," if k != "" else "" )+ hex_value + ","
         if hex_out[-2] == ',' and hex_out[-1] == ',':
             hex_out = hex_out[:-1]
         #print(hex_out)
-        hex_out += "0x0d, 0x0a," + "\n/* Content_Info*/\n"
-        hex_out +=  self.prepare_content(self.content)+ "};"
-        print(self.content)
+        hex_out += "0x0d, 0x0a," + f"\n/* Content_Info {len(self.content)}*/\n"
+        hex_out += content_info + "};"
+
+        #print(self.content)
         return hex_out
 
     def make_file(self):
