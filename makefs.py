@@ -71,7 +71,8 @@ class MakeHtmlCClass:
 
         self.validate_content_type(content_type)
         self.contentType = content_type
-        self.contentSize  = str(os.path.getsize(self.path_in))#self.determine_content_size()
+        self.contentSize  = "0"#str(os.path.getsize(self.path_in))#self.determine_content_size()
+        self.num = 0
         self.template = {
             "": uri + "\0",
             "HTTP": header + "\r\n",
@@ -94,20 +95,25 @@ class MakeHtmlCClass:
     def prepare_content(self, content):
         hex_content = ""
         i = 0
+        self.num = 0
         for elem in content:
             chr = elem.encode("utf-8").hex()
             if(len(chr) > 2):
                 st = chr[0:2] +', ' + '0x' + chr[2:]
+                self.num += 2
             else:
+                self.num +=1
                 st = chr
             hex_content +='0x' + st + ","
             i+=1
             if i%10 == 1:
                 hex_content+="\n"
+        #print(self.num)
         return hex_content[:-1]
 
     def create_arr(self):
         content_info =  self.prepare_content(self.content)
+        self.template.update({"Content-Length: ": str(self.num) + "\r\n"})
         hex_out = f"extern const unsigned char FSDATA_ALIGN_PRE {self.create_name_variable()}[] FSDATA_ALIGN_POST = " + "{"
         for k,v in self.template.items():
             hex_template = f"\n/* {k}{v[:-1]}  {str(len(v) + len(k))} chars*/ \n"
@@ -116,7 +122,7 @@ class MakeHtmlCClass:
             hex_out += hex_template + hex_key + ("," if k != "" else "" )+ hex_value + ","
         if hex_out[-2] == ',' and hex_out[-1] == ',':
             hex_out = hex_out[:-1]
-        #print(hex_out)
+         #print(hex_out)
         hex_out += "0x0d, 0x0a," + f"\n/* Content_Info {len(self.content)}*/\n"
         hex_out += content_info + "};"
 
