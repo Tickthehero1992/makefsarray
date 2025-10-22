@@ -1,25 +1,20 @@
 window.onload = function(){
-    if (window.location.search != '') window.history.pushState(null, '', '/');
+   // if (window.location.search != '') window.history.pushState(null, '', '/');
     let statusBar = document.getElementById('status_bar');
     let logsDiv = document.getElementById('logs');
     let firmForm = document.getElementById('firm_form')
     let firmFile = firmForm.querySelector('input[type="file"]');
     let firmSend = firmForm.querySelector('input[type="submit"]');
-    let spiffsForm = document.getElementById('spiffs_form');
-    let spiffsFile = spiffsForm.querySelector('input[type="file"]');
-    let spiffsSend = spiffsForm.querySelector('input[type="submit"]');
     let naviButton = document.querySelectorAll('#navi > button')[0];
     let naviButton2 = document.querySelectorAll('#navi > button')[1];
     let isModifed = false;
     naviButton.disabled = false;
     naviButton2.disabled = false;
     firmFile.disabled = false;
-    spiffsFile.disabled = false;
     function buttonBlock(value){
         naviButton.disabled = value;
         naviButton2.disabled = value;
         firmFile.disabled = value;
-        spiffsFile.disabled = value;
         firmSend.disabled = value;
         spiffsSend.disabled = value;
     }
@@ -43,42 +38,58 @@ window.onload = function(){
         }
     }
     async function getAsyncResponse(file, url){
-        buttonBlock(true);
-        statusBar.removeAttribute('hidden');
-        clearInterval(logging);
-        let animation = statusBar.animate([{'bottom': '-30px'}, {'bottom': '0px'}], 600);
-        animation.addEventListener('finish', () => statusBar.style.bottom = '0px');
-        let rotating = setInterval(() => rotateSlash(), 350);
-        const response = await fetch(url, {method: 'POST', body: file, headers:{
-            'Content-Type': 'application/octet-stream',
-        }});
-        if (!response.ok){
-            return new Error('Возникла ошибка при установке прошивки!');
-        }
-        let result = await response.text();
-        clearInterval(rotating);
+
+//        statusBar.removeAttribute('hidden');
+//        clearInterval(logging);
+//        let animation = statusBar.animate([{'bottom': '-30px'}, {'bottom': '0px'}], 600);
+//        animation.addEventListener('finish', () => statusBar.style.bottom = '0px');
+//        let rotating = setInterval(() => rotateSlash(), 350);
+        console.log('url ask..', url);
+        let result =  await fetch(url, {method: 'POST', signal: AbortSignal.timeout(5000), body: file, headers:{
+           'Content-Type': 'application/octet-stream',
+        }})
+
         return result;
     }
-    async function getAsyncLogs(){
-        const response = await fetch('/get_logs', {method: "POST"});
-        if (!response.ok){
-            return new Error('Ошибка - логи не были получены!');
-        }
-        let result = await response.text();
-        return result;
-    }
-    function setupUpdate(e, file, url){
-        e.preventDefault();  
-        let result = getAsyncResponse(file, url);
-        result.then(() => {
-            document.getElementById('status_text').innerText = 'Обновление установлено успешно - устройство перезагрузится через 5 сек!';
-            setTimeout(() => {
-                window.location.replace('/');
-            }, 7500);
-        }).catch((error) => {
-            window.alert(error);
-            window.location.reload();
-        }) 
+    function setupUpdate(file, url){
+        //buttonBlock(true);
+        //alert(file.size)
+        var size = file.size;
+        var chunkSize = 256;
+        var fileSize = file.size;
+        var chunks = Math.ceil(file.size/chunkSize,chunkSize);
+        var chunk = 0;
+        console.log('current size', size);
+        console.log('current size', chunks);
+        let res;
+         while (chunk < chunks) {
+                var offset = chunk*chunkSize;
+                console.log('current chunk..', chunk);
+//                console.log('offset...', chunk*chunkSize);
+//                console.log('file blob from offset...', offset)
+//                console.log("size", size);
+                if(size < chunkSize){
+                  chunkSize = size;
+                }
+                console.log('res is ',res)
+                getAsyncResponse(file.slice(offset, chunkSize), url).then(() => {
+                    size -= chunkSize;
+                    chunk++;
+                })
+
+
+
+           }
+           alert("Done");
+//        result.then(() => {
+//            document.getElementById('status_text').innerText = 'Обновление установлено успешно - устройство перезагрузится через 5 сек!';
+//            setTimeout(() => {
+//                window.location.replace('/');
+//            }, 7500);
+//        }).catch((error) => {
+//            window.alert(error);
+//           // window.location.reload();
+//        })
     }
     function logsOutput(){
         let response = getAsyncLogs();
@@ -160,25 +171,13 @@ window.onload = function(){
         (firmFile.value != '') ? firmSend.disabled = false : firmSend.disabled = true;
     })
     firmForm.addEventListener('submit', (e) => {
-        buttonBlock(true);
-        setupUpdate(e, firmFile.files[0], '/firmware_update');
+        e.preventDefault();
     });
-    spiffsFile.addEventListener('change', () => {
-        (spiffsFile.value != '') ? spiffsSend.disabled = false : spiffsSend.disabled = true;
-    })
-    spiffsForm.addEventListener('submit', (e) => {
-        buttonBlock(true);
-        if (spiffsFile.files[0].name.toString().toLowerCase().indexOf("spiff") != -1){
-            setupUpdate(e, spiffsFile.files[0], '/spiffs_update');
-        }
-        else {
-            window.alert('Ошибка! Выбранный файл не является файлом раздела SPIFFS');
-            window.location.reload();
-        }
-    });
-    naviButton.addEventListener('click', () => window.location.replace('/'));
-    naviButton2.addEventListener('click', rebooting);
-    let logging = setInterval(() => {
-        logsOutput();
-    }, 300);
+
+    firmSend.onclick = function(){
+        setupUpdate(firmFile.files[0], '/firmware_update');
+    }
+
+    //naviButton.addEventListener('click', () => window.location.replace('/'));
+   // naviButton2.addEventListener('click', rebooting);
 };
