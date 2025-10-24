@@ -16,7 +16,6 @@ window.onload = function(){
         naviButton2.disabled = value;
         firmFile.disabled = value;
         firmSend.disabled = value;
-        spiffsSend.disabled = value;
     }
     function rotateSlash(){
         let statusText = document.getElementById('status_text');
@@ -63,8 +62,15 @@ window.onload = function(){
         return arr;
         }
 
+function progress_bar(percent){
+    var elem = document.getElementById("progressBar");
+    console.log('percent,',percent);
+    elem.style.width = percent + "%";
+    elem.innerHTML = Number(percent.toFixed(2)) + "%";
+}
+
     async function setupUpdate(file, url){
-        //buttonBlock(true);
+        buttonBlock(true);
         //alert(file.size)
         var size = file.size;
         var chunkSize = 256;
@@ -81,17 +87,15 @@ window.onload = function(){
         console.log('current size', chunks);
         console.log('arr', arr);
         let res;
-         while (chunk < chunks) {
+        while (chunk < chunks) {
                 var offset = chunk*chunkSize;
                 console.log('current chunk..', chunk);
-//                console.log('offset...', chunk*chunkSize);
-//                console.log('file blob from offset...', offset)
-//                console.log("size", size);
                 if(size < chunkSize){
                   chunkSize = size;
                 }
                 await getAsyncResponse(file.slice(offset, offset+chunkSize), url);
                 size -= chunkSize;
+                progress_bar(chunk/chunks * 100);
                 chunk++;
                 await new Promise(r => setTimeout(r, 300));
            }
