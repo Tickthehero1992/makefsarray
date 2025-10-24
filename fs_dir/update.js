@@ -45,13 +45,25 @@ window.onload = function(){
 //        animation.addEventListener('finish', () => statusBar.style.bottom = '0px');
 //        let rotating = setInterval(() => rotateSlash(), 350);
         console.log('url ask..', url);
+
         let result =  await fetch(url, {method: 'POST', signal: AbortSignal.timeout(5000), body: file, headers:{
            'Content-Type': 'application/octet-stream',
-        }})
-
-        return result;
+        }}).then((response) => {console.log(response);}).catch((err)=>{ console.log(err)});
+        //console.log('reseponse', result);
     }
-    function setupUpdate(file, url){
+
+    function numToUint8Array(num) {
+        let arr = new Uint8Array(4);
+
+        for (let i = 0; i < 4; i++) {
+                arr[i] = num % 256;
+                num = Math.floor(num / 256);
+                }
+
+        return arr;
+        }
+
+    async function setupUpdate(file, url){
         //buttonBlock(true);
         //alert(file.size)
         var size = file.size;
@@ -59,8 +71,15 @@ window.onload = function(){
         var fileSize = file.size;
         var chunks = Math.ceil(file.size/chunkSize,chunkSize);
         var chunk = 0;
+        const arr2 = numToUint8Array(size);
+        const arr3 = numToUint8Array(chunks)
+        //const arr = new Uint8Array([chunks]);
+        var arr = new Uint8Array(8);
+        arr.set(arr3);
+        arr.set(arr2, 4);
         console.log('current size', size);
         console.log('current size', chunks);
+        console.log('arr', arr);
         let res;
          while (chunk < chunks) {
                 var offset = chunk*chunkSize;
@@ -71,15 +90,16 @@ window.onload = function(){
                 if(size < chunkSize){
                   chunkSize = size;
                 }
-                console.log('res is ',res)
-                getAsyncResponse(file.slice(offset, chunkSize), url).then(() => {
-                    size -= chunkSize;
-                    chunk++;
-                })
-
-
-
+                await getAsyncResponse(file.slice(offset, offset+chunkSize), url);
+                size -= chunkSize;
+                chunk++;
+                await new Promise(r => setTimeout(r, 300));
            }
+
+           await fetch("/update_statistic", {method: 'POST', signal: AbortSignal.timeout(5000), body: arr, headers:{
+           'Content-Type': 'application/octet-stream',
+                }}).then((response) => {console.log(response);}).catch((err)=>{ console.log(err)});
+           await getRebootMessage();
            alert("Done");
 //        result.then(() => {
 //            document.getElementById('status_text').innerText = 'Обновление установлено успешно - устройство перезагрузится через 5 сек!';
