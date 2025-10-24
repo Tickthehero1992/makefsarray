@@ -7,12 +7,13 @@
 }
 
 #progressBar {
-  width: 1%;
+  width: 2%;
   height: 40px;
-  background-color: orange;
+  background-color: tan;
   text-align: center;
   line-height: 40px;
   color: white;
+  position:absolute;
 }
 </style>
 <head>
@@ -31,13 +32,6 @@
 			<input type="file" id="firm_file" accept="application/octet-stream" disabled>
 			<input type="submit" value="Установить обновления" disabled>
 		</form>
-	</div>
-	<div id="container" style="margin-top: 20px; margin-bottom: 20px; overflow: hidden; max-height: 72vh; width: 100%; margin-left: auto; margin-right: auto;">
-		<div id='logs' style="overflow-y: scroll; box-shadow: 0 1px 1px #575555 inset; background-color: white; height: 72vh; width: 100%;">
-		</div>
-	</div>
-	<div id="status_bar" style="background-color: green; position:absolute; bottom:-30px; left:0px; width:100%; height:30px;" hidden>
-		<p id="status_text" style="color:white; margin: 5px 0px 0px 20px">Установка обновления, пожалуйста подождите... /</p>
 	</div>
 	<div id="Progress">
 		<div id="progressBar"><b>0%</b></div>
