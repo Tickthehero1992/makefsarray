@@ -36,8 +36,18 @@ window.onload = function(){
         }
     }
     var state_con = 0;
-    async function getAsyncResponse(file, url){
+    var crc = 0;
+    async function getAsyncResponse(file, size_f, url){
         console.log('url ask..', url);
+        var ap32 = await file.arrayBuffer();
+        const u8arr = new Uint8Array(ap32);
+        console.log('info ', u8arr);
+        for(var i=0; i<size_f; i++)
+        {
+            crc+=u8arr[i];
+        }
+        //u8arr.forEach((elem) => {crc+=elem;})
+        console.log('crc', crc);
 
         let result =  await fetch(url, {method: 'POST', signal: AbortSignal.timeout(5000), body: file, headers:{
            'Content-Type': 'application/octet-stream',
@@ -72,20 +82,22 @@ function progress_bar(percent){
         var chunk = 0;
         const arr2 = numToUint8Array(size);
         const arr3 = numToUint8Array(chunks)
-        var arr = new Uint8Array(8);
+
+        var arr = new Uint8Array(12);
         arr.set(arr3);
         arr.set(arr2, 4);
         console.log('current size', size);
         console.log('current size', chunks);
         console.log('arr', arr);
         let res;
+
         while (chunk < chunks) {
                 var offset = chunk*chunkSize;
                 console.log('current chunk..', chunk);
                 if(size < chunkSize){
                   chunkSize = size;
                 }
-                await getAsyncResponse(file.slice(offset, offset+chunkSize), url);
+                await getAsyncResponse(file.slice(offset, offset+chunkSize), chunkSize, url);
                 if(state_con == 1)
                 {
                     buttonBlock(false);
@@ -97,10 +109,12 @@ function progress_bar(percent){
                 await new Promise(r => setTimeout(r, 300));
            }
            console.log('crc', crc)
-
+           const arr4 = numToUint8Array(crc);
+           arr.set(arr4, 8);
            await fetch("/update_statistic", {method: 'POST', signal: AbortSignal.timeout(5000), body: arr, headers:{
            'Content-Type': 'application/octet-stream',
                 }}).then((response) => {console.log(response);}).catch((err)=>{ console.log(err)});
+           await new Promise(r => setTimeout(r, 300));
            await getRebootMessage();
            alert("Установка обновлений прошла успешно, контроллер будет перезагружен");
 
@@ -110,25 +124,24 @@ function progress_bar(percent){
         const response = await fetch('/reboot', {method: 'POST', headers: {
             'Content-Type': 'text/html'
         }});
-        if (!response.ok){
-            return new Error('Сервер не отвечает!');
-        }
         let result = await response.text();
-        return result;
+        return response.status;
     }
     function rebooting(){
         let conf = confirm('Вы действительно хотите перезагрузить устройство?');
         if (conf == true) {
             buttonBlock(true);
-            clearInterval(logging);
             let result = getRebootMessage();
-            result.then((text) => {
-                if (text == 'OK!'){
-                    document.getElementById('status_text').innerText = 'Устройство перезагрузится через 5 сек!';
-                    statusBar.removeAttribute('hidden');
-                    let animation = statusBar.animate([{'bottom': '-30px'}, {'bottom': '0px'}], 600);
-                    animation.addEventListener('finish', () => statusBar.style.bottom = '0px')
-                    setTimeout(() => window.location.replace('/'), 7500);
+            result.then((response) => {
+                console.log(response);
+                if(response == 404)
+                {
+                 alert('ERROR Not found!');
+                }
+                if(response == 200)
+                {
+                    alert("Перезагрузка контроллера ... ");
+                    window.location.replace('/update');
                 }
             });
             result.catch((error) => window.alert(error));
@@ -146,10 +159,10 @@ function progress_bar(percent){
 
     firmSend.onclick = function(){
      setupUpdate(firmFile.files[0], '/firmware_update');
-
-
-    }
-
-    //naviButton.addEventListener('click', () => window.location.replace('/'));
-   // naviButton2.addEventListener('click', rebooting);
+    };
+//    naviButton2.onclick = function(){
+//        getRebootMessage();
+//    }
+    naviButton.addEventListener('click', () => window.location.replace('/update'));
+    naviButton2.addEventListener('click', rebooting);
 };

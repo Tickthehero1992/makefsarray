@@ -59,117 +59,14 @@ th, td {
 <body>
 	<div id="header">
 		<button style="background-color:green; color:white">Отладка и обновление</button>
-		<button style="background-color:green; color:white;">Перезагрузка</button>
 	</div>
-	<div id="flex_container" style="display: flex; flex-flow: row wrap; justify-content: space-evenly; align-items: flex-start; margin: 10vh 0 10vh 0">
-		<div>
-			<table id="status_table">
-				<caption>Состояние:</caption>
-				<tbody>
-					<tr>
-						<td>Состояние зарядного контроллера</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Код ошибки зарядного контроллера</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Допустимое зарядное напряжение</td>
-						<td>0 В</td>
-					</tr>
-					<tr>
-						<td>Зарядка</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Минимальный зарядный ток</td>
-						<td>0 A</td>
-					</tr>
-					<tr>
-						<td>Максимальное зарядное напряжение</td>
-						<td>0 В</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div>
-			<table id="charging_table">
-				<caption>Данные зарядной сессии:</caption>
-				<tbody>
-					<tr>
-						<td>Потребность напряжения</td>
-						<td>0 В</td>
-					</tr>
-					<tr>
-						<td>Потребность тока</td>
-						<td>0 А</td>
-					</tr>
-					<tr>
-						<td>Текущее состояние заряда (SOC)</td>
-						<td>0 %</td>
-					</tr>
-					<tr>
-						<td>Состояние батареи</td>
-						<td></td>
-					</tr>	
-					<tr>
-						<td>Ограничение выходного тока</td>
-						<td>0 А</td>
-					</tr>
-					<tr>
-						<td>Ограничение выходного напряжения</td>
-						<td>0 В</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div>
-			<table id="holding_table">
-				<caption>Выходные регистры:</caption>
-				<tbody>
-					<tr>
-						<td>RGB - лента</td>
-						<td style="background-color: white;"></td>
-					</tr>
-					<tr>
-						<td>Режим работы СБ</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Подтверждение разрешения работы контроллера CHADEMO</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Флаги состояния СБ</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Максимальное выходное напряжение на выходных силовых разъемах</td>
-						<td>0 В</td>
-					</tr>
-					<tr>
-						<td>Максимальное выходной ток на выходных силовых разъемах</td>
-						<td>0 А</td>
-					</tr>
-					<tr>
-						<td>Текущее выходное напряжение на выходных силовых разъемах</td>
-						<td>0 В</td>
-					</tr>
-					<tr>
-						<td>Текущий выходной ток на выходных силовых разъемах</td>
-						<td>0 А</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<div id="status_bar" style="background-color: green; position:fixed; bottom:0px; left:0px; width:100%; height:30px;" hidden>
-		<p id="status_text" style="color:white; margin: 5px 0px 0px 20px"></p>
-	</div>
-	<script type="text/javascript" src="index.js"></script>
+
+	<script type="text/javascript" >
+		    let naviButton = document.querySelectorAll('#header > button')[0];
+			naviButton.addEventListener('click', () => window.location.replace('/update'));
+	</script>
 </body>
 <footer>
-	<div id="header" class="soft-parent">АО "ГРПЗ" филиал "Касимовский приборный завод" © 2024<div class="soft-child">Версия ПО: </div></div>
+	<div id="header" class="soft-parent">АО "ГРПЗ" филиал "Касимовский приборный завод" © 2025<div class="soft-child">Версия ПО: 1.1</div></div>
 </footer>
 </html>
