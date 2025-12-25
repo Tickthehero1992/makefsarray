@@ -51,7 +51,7 @@ window.onload = function(){
 
         let result =  await fetch(url, {method: 'POST', signal: AbortSignal.timeout(5000), body: file, headers:{
            'Content-Type': 'application/octet-stream',
-        }}).then((response) => {if(!response.ok){ alert('Error status:', response.status); state_con = 1; }console.log(response);}).catch((err)=>{console.log(err)});
+        }}).then((response) => {if(!response.ok){ alert('Ошибка обновления! Контроллер будет перезагружен'); state_con = 1; }console.log(response);}).catch((err)=>{console.log(err)});
     }
 
     function numToUint8Array(num) {
@@ -101,7 +101,7 @@ function progress_bar(percent){
                 if(state_con == 1)
                 {
                     buttonBlock(false);
-                    return;
+                    break;
                 }
                 size -= chunkSize;
                 progress_bar(chunk/(chunks - 1) * 100);
@@ -117,6 +117,8 @@ function progress_bar(percent){
            await new Promise(r => setTimeout(r, 300));
            await getRebootMessage();
            alert("Установка обновлений прошла успешно, контроллер будет перезагружен");
+           await new Promise(r => setTimeout(r, 4000));
+           window.location.replace('/')
 
     }
 
@@ -141,7 +143,7 @@ function progress_bar(percent){
                 if(response == 200)
                 {
                     alert("Перезагрузка контроллера ... ");
-                    window.location.replace('/update');
+                    window.location.replace('/');
                 }
             });
             result.catch((error) => window.alert(error));

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КРЭТ™</title>
+<style>
+body {background-color: Azure;}
+header {
+    background-color:tan;
+    clear:both;
+    text-align:center;
+    padding:5px;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 50px);
+}
+
+main {
+	flex: 1;
+}
+footer {
+    background-color:tan;
+    clear:both;
+    text-align:center;
+    padding:5px;
+}
+table {
+	border: 2px solid green;
+	border-collapse: collapse;
+    background-color:#eeeeee;
+	margin:10px;
+    height:100%;
+    float:left;
+}
+tr:hover {background-color:White;}
+th, td {
+	font-size: 0.9rem;
+	text-align: center;
+	border: 1px solid green;
+}
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 300px;
+	background-color: green;
+	color: #fff;
+	text-align: left;
+	padding: 12px;
+	position: absolute;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}
+.table_cls {
+margin: 0  auto;
+	width:100%
+}
+</style>
+</head>
+<body>
+	<div class="container">
+	<header>
+		<h3>Версия Программного обеспечения: 1.1</h3>
+        <button id="reboot" style="background-color:green; color:white">Перезагрузка</button>
+		<button id="update" style="background-color:green; color:white">Отладка и обновление</button>
+		<button id="btn_test" style="background-color:green; color:white">Заполнить</button>
+	</header>
+	<main>
+		<table id="data_table" class="table_cls">
+			<tr>
+				<th> Номер модуля </th>
+				<th> Запрос тока </th>
+				<th> Выдаваемый ток </th>
+				<th> Запрос напряжения </th>
+				<th> Выдаваемое напряжение </th>
+				<th> Температура </th>
+			</tr>
+		</table>
+	</main>
+	<script type="text/javascript" >
+			const ModbusRTU = require("modbus-serial");
+			const client = new ModbusRTU();
+
+			// open connection to a tcp line
+			client.connectTCP("127.0.0.1", { port: 8502 });
+		    let naviButton = document.getElementById('reboot');
+			naviButton.addEventListener('click', () => {
+				alert("Перезагрузка контроллера!");
+					fetch('/reboot', {
+								method: 'post',
+					});
+
+					setTimeout(() => {
+							window.location.replace('/');
+						}, 10000);
+
+	        	}
+			);
+            let naviButton2 = document.getElementById('update');
+			naviButton2.addEventListener('click', () => {
+				alert("Переход в bootloader!");
+				fetch('/boot', {
+							method: 'post',
+				});
+
+				setTimeout(() => {
+						window.location.replace('/');
+					}, 10000);
+				}
+			);
+
+			let navTest = document.getElementById('btn_test')
+			navTest.addEventListener('click', () => {
+				let data = [
+					{name: 'module1', temp1: '46', currentReq: 150, currentOut: 150, voltageReq: 450, voltageOut: 450},
+					{name: 'module2', temp1: '46', currentReq: 150, currentOut: 150, voltageReq: 450, voltageOut: 450},
+					{name: 'module3', temp1: '46', currentReq: 150, currentOut: 150, voltageReq: 450, voltageOut: 450},
+					{name: 'module4', temp1: '46', currentReq: 150, currentOut: 150, voltageReq: 450, voltageOut: 450}
+				]
+				updateTableWithNewData(data)
+			});
+			function update_modules() {
+				fetch('/modules', {method: 'post'}).then(data => {
+							updateTableWithNewData(data)
+						}
+				);
+			}
+			setInterval(update_modules, 15000)
+
+		function updateTableWithNewData(data) {
+			const tableBody = document.getElementById('data_table');
+
+			// Используем DocumentFragment для оптимизации
+			const fragment = document.createDocumentFragment();
+
+			// Создаем строки с новыми данными
+			data.forEach(item => {
+				const row = document.createElement('tr');
+
+				const nameCell = document.createElement('td');
+				nameCell.textContent = item.name;
+				row.appendChild(nameCell);
+
+				const currentReqCell = document.createElement('td');
+				currentReqCell.textContent = item.currentReq;
+				row.appendChild(currentReqCell);
+
+				const currentOutCell = document.createElement('td');
+				currentOutCell.textContent = item.currentOut;
+				row.appendChild(currentOutCell);
+
+				const voltageReqCell = document.createElement('td');
+				voltageReqCell.textContent = item.voltageReq;
+				row.appendChild(voltageReqCell);
+
+				const voltageOutCell = document.createElement('td');
+				voltageOutCell.textContent = item.voltageOut;
+				row.appendChild(voltageOutCell)
+
+				const tempCell = document.createElement('td');
+				tempCell.textContent = item.temp1;
+				row.appendChild(tempCell)
+
+				fragment.appendChild(row);
+			});
+
+			// Добавляем все новые строки одной операцией
+			tableBody.appendChild(fragment);
+		}
+
+	</script>
+	</div>
+</body>
+<footer>
+	АО "ГРПЗ" филиал "Касимовский приборный завод" © 2025 Версия ПО: 1.1
+</footer>
+</html>
