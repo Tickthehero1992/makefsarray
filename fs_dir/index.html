@@ -1,16 +1,33 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>КРЭТ™</title>
+<meta http-equiv="refresh" content="10">
+<meta content="MSHTML 6.00.2900.3698" name="GENERATOR">
+<title>КРЭТ�</title>
 <style>
 body {background-color: Azure;}
-#header {
+header {
     background-color:tan;
     clear:both;
     text-align:center;
-    padding:5px;    
+    padding:5px;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 50px);
+}
+
+main {
+	flex: 1;
+}
+footer {
+    background-color:tan;
+    clear:both;
+    text-align:center;
+    padding:5px;
 }
 table {
 	border: 2px solid green;
@@ -43,30 +60,113 @@ th, td {
 	visibility: visible;
 	opacity: 1;
 }
-.soft-parent {
-	position: relative;
-	z-index: 0;
+.table_cls {
+margin: 0  auto;
+	width:100%
 }
-.soft-child {
-	position: absolute;
-	bottom: 25%;
-	right: 2%;
-	font-family: Verdana, sans-serif;
-	font-size: smaller;
-} 
 </style>
 </head>
 <body>
-	<div id="header">
-		<button style="background-color:green; color:white">Отладка и обновление</button>
+	<div class="container">
+	<header>
+		<h3>Версия Программного обеспечения: 2.6</h3>
+        <button id="reboot" style="background-color:green; color:white">Перезагрузка</button>
+		<button id="update" style="background-color:green; color:white">Отладка и обновление</button>
+		<button id="btn_test" style="background-color:green; color:white">Заполнить</button>
+	</header>
+	<main>
+		<table id="data_table" class="table_cls">
+			<tr>
+				<th> Номер модуля </th>
+				<th> Запрос тока </th>
+				<th> Выдаваемый ток </th>
+				<th> Запрос напряжения </th>
+				<th> Выдаваемое напряжение </th>
+				<th> Температура </th>
+				<tr>
+					<td>1</td>
+					<td><!--#Ir1-->&nbsp </td>
+					<td><!--#In1-->&nbsp </td>
+					<td><!--#Ur1-->&nbsp </td>
+					<td><!--#Un1-->&nbsp </td>
+					<td><!--#T1-->&nbsp </td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td><!--#Ir2-->&nbsp </td>
+					<td><!--#In2-->&nbsp </td>
+					<td><!--#Ur2-->&nbsp </td>
+					<td><!--#Un2-->&nbsp </td>
+					<td><!--#T2-->&nbsp </td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td><!--#Ir3-->&nbsp </td>
+					<td><!--#In3-->&nbsp </td>
+					<td><!--#Ur3-->&nbsp </td>
+					<td><!--#Un3-->&nbsp </td>
+					<td><!--#T3-->&nbsp </td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td><!--#Ir4-->&nbsp </td>
+					<td><!--#In4-->&nbsp </td>
+					<td><!--#Ur4-->&nbsp </td>
+					<td><!--#Un4-->&nbsp </td>
+					<td><!--#T4-->&nbsp </td>
+				</tr>
+            <tr>
+					<td>5</td>
+					<td><!--#Ir5-->&nbsp </td>
+					<td><!--#In5-->&nbsp </td>
+					<td><!--#Ur5-->&nbsp </td>
+					<td><!--#Un5-->&nbsp </td>
+					<td><!--#T5-->&nbsp </td>
+				</tr>
+            <tr>
+					<td>6</td>
+					<td><!--#Ir6-->&nbsp </td>
+					<td><!--#In6-->&nbsp </td>
+					<td><!--#Ur6-->&nbsp </td>
+					<td><!--#Un6-->&nbsp </td>
+					<td><!--#T6-->&nbsp </td>
+				</tr>
+			</tr>
+		</table>
+	</main>
+	<script type="text/javascript" >
+		    let naviButton = document.getElementById('reboot');
+			naviButton.addEventListener('click', () => {
+				alert("Перезагрузка контроллера!");
+					fetch('/reboot', {
+								method: 'post',
+					});
+
+					setTimeout(() => {
+							window.location.replace('/');
+						}, 10000);
+
+	        	}
+			);
+            let naviButton2 = document.getElementById('update');
+			naviButton2.addEventListener('click', () => {
+				alert("Переход в bootloader!");
+				fetch('/boot', {
+							method: 'post',
+				});
+
+				setTimeout(() => {
+						window.location.replace('/');
+					}, 10000);
+				}
+			);
+
+
+	</script>
 	</div>
 
-	<script type="text/javascript" >
-		    let naviButton = document.querySelectorAll('#header > button')[0];
-			naviButton.addEventListener('click', () => window.location.replace('/update'));
-	</script>
-</body>
 <footer>
-	<div id="header" class="soft-parent">АО "ГРПЗ" филиал "Касимовский приборный завод" © 2025<div class="soft-child">Версия ПО: 1.1</div></div>
+	АО "ГРПЗ" филиал "Касимовский приборный завод" © 2026  Версия 2.6
 </footer>
+</body>
 </html>

@@ -76,7 +76,7 @@ function progress_bar(percent){
         buttonBlock(true);
         //alert(file.size)
         var size = file.size;
-        var chunkSize = 256;
+        var chunkSize = 1024;
         var fileSize = file.size;
         var chunks = Math.ceil(file.size/chunkSize,chunkSize);
         var chunk = 0;
@@ -93,7 +93,7 @@ function progress_bar(percent){
 
         while (chunk < chunks) {
                 var offset = chunk*chunkSize;
-                console.log('current chunk..', chunk);
+               // console.log('current chunk..', chunk);
                 if(size < chunkSize){
                   chunkSize = size;
                 }
@@ -106,9 +106,10 @@ function progress_bar(percent){
                 size -= chunkSize;
                 progress_bar(chunk/(chunks - 1) * 100);
                 chunk++;
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(r => setTimeout(r, 100));
+
            }
-           console.log('crc', crc)
+           //console.log('crc', crc)
            const arr4 = numToUint8Array(crc);
            arr.set(arr4, 8);
            await fetch("/update_statistic", {method: 'POST', signal: AbortSignal.timeout(5000), body: arr, headers:{
